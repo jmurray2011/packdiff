@@ -4,6 +4,11 @@ All notable changes are documented here, following [Keep a Changelog](https://ke
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-04
+
+### Fixed
+- RPMs that record a size for directories, as nFPM and GoReleaser write them, lost their directory entries, and their RPM 6 form failed to read. Directory permission and owner changes in such packages are now reported.
+
 ## [0.1.0] - 2026-10-04
 
 ### Added

@@ -110,7 +110,10 @@ func walkCpio(r io.Reader, files []rpmutils.FileInfo, visit func(rpmutils.FileIn
 			if idx < 0 || idx >= int64(len(files)) {
 				return fmt.Errorf("%w: stripped entry index %d of %d files", ErrPayload, idx, len(files))
 			}
-			fi, size = files[idx], files[idx].Size()
+			fi = files[idx]
+			if t := fi.Mode() & 0o170000; t == modeReg || t == modeLink {
+				size = fi.Size() // directories and other types carry no content
+			}
 		case newcMagic:
 			var fields [13]int64
 			for i := range fields {
@@ -138,11 +141,16 @@ func walkCpio(r io.Reader, files []rpmutils.FileInfo, visit func(rpmutils.FileIn
 				return fmt.Errorf("%w: archive entry %q is not in the header", ErrPayload, name)
 			}
 			fi = files[idx]
-			switch {
-			case size == 0 && fi.Size() > 0:
-				fi = nil // a hard link set stores content once, on its last entry
-			case size != fi.Size():
-				return fmt.Errorf("%w: %s is %d bytes in the archive, %d in the header", ErrPayload, name, size, fi.Size())
+			// Directories can carry a header size (4096 from rpmpack-based tools) with no
+			// content, so only regular files are checked: a hard link set stores content
+			// once, on its last entry.
+			if fi.Mode()&0o170000 == modeReg {
+				switch {
+				case size == 0 && fi.Size() > 0:
+					fi = nil
+				case size != fi.Size():
+					return fmt.Errorf("%w: %s is %d bytes in the archive, %d in the header", ErrPayload, name, size, fi.Size())
+				}
 			}
 		default:
 			return fmt.Errorf("%w: bad magic %q", ErrPayload, magic)

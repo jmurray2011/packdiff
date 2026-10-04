@@ -13,6 +13,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/rpmpack"
 	rpmutils "github.com/sassoftware/go-rpmutils"
 )
 
@@ -107,6 +108,45 @@ func TestOpenRPMStrippedPayload(t *testing.T) {
 		g := gf[k]
 		if g.SHA256 != w.SHA256 || g.Mode != w.Mode || g.User != w.User || g.Config != w.Config || !bytes.Equal(g.Content, w.Content) {
 			t.Errorf("%s: got %+v want %+v", k, g, w)
+		}
+	}
+}
+
+// rpmWithTree builds an RPM whose directory is recorded with a nonzero header size, as
+// rpmpack and the tools built on it (nFPM, GoReleaser) write.
+func rpmWithTree(t *testing.T) []byte {
+	t.Helper()
+	r, err := rpmpack.NewRPM(rpmpack.RPMMetaData{Name: "app", Version: "1.0", Release: "1", Arch: "noarch", Compressor: "gzip"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	r.AddFile(rpmpack.RPMFile{Name: "/opt/app", Mode: 0o40755, Owner: "root", Group: "root"})
+	r.AddFile(rpmpack.RPMFile{Name: "/opt/app/app.properties", Body: []byte("a=1\n"), Mode: 0o100644, Owner: "root", Group: "root"})
+	r.AddFile(rpmpack.RPMFile{Name: "/opt/app/current", Body: []byte("app.properties"), Mode: 0o120777, Owner: "root", Group: "root"})
+	var buf bytes.Buffer
+	if err := r.Write(&buf); err != nil {
+		t.Fatal(err)
+	}
+	return buf.Bytes()
+}
+
+func TestOpenRPMDirectoriesWithHeaderSize(t *testing.T) {
+	t.Parallel()
+	classic := rpmWithTree(t)
+	for name, data := range map[string][]byte{"app-1.0-1.noarch.rpm": classic, "app-1.0-1.rpm6.rpm": stripPayload(t, classic)} {
+		s, err := Open(context.Background(), writeFile(t, name, data), Options{Want: wantProps})
+		if err != nil {
+			t.Fatalf("%s: %v", name, err)
+		}
+		files := byKey(s)
+		if d, ok := files["opt/app"]; !ok || d.Mode&0o170000 != modeDir {
+			t.Errorf("%s: directory missing or wrong type: %+v", name, d)
+		}
+		if l, ok := files["opt/app/current"]; !ok || l.Mode&0o170000 != modeLink || l.Link != "app.properties" {
+			t.Errorf("%s: symlink missing or wrong: %+v", name, l)
+		}
+		if f := files["opt/app/app.properties"]; string(f.Content) != "a=1\n" {
+			t.Errorf("%s: file content = %q", name, f.Content)
 		}
 	}
 }

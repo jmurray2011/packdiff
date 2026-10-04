@@ -1,0 +1,9 @@
+/packdiff
+/dist/
+*.rpm
+*.deb
+/THIRD_PARTY_NOTICES
+/build/
+*.exe
+*.test
+*.out

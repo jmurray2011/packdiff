@@ -1,0 +1,36 @@
+version: "2"
+linters:
+  default: standard
+  enable:
+    - depguard
+    - staticcheck
+  settings:
+    depguard:
+      rules:
+        core:
+          files:
+            - "**/core/*.go"
+            - "!**/*_test.go"
+          list-mode: strict
+          allow:
+            - $gostd
+        detect:
+          files:
+            - "**/detect/*.go"
+            - "!**/*_test.go"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/jmurray2011/packdiff/core
+            - go.yaml.in/yaml/v3
+        report:
+          files:
+            - "**/report/*.go"
+            - "!**/*_test.go"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/jmurray2011/packdiff/core
+formatters:
+  enable:
+    - gofumpt

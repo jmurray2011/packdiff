@@ -1,0 +1,53 @@
+app 1.2.3-1 -> 1.2.4-1 | config ~3 | outbound +2 -2 | crypto +2 -1 | schema +1 | host +6 -1 ~2 | deps ~1 | files ~1
+config changed ${geo.retries}  (3 -> 5)
+    at app-1.2.4-1.noarch.rpm > opt/app/webapp/WEB-INF/classes/com/example/Geo.class
+config changed opt/app/conf/app.properties#db.url  (jdbc:postgresql://db.example.net:5432/app -> jdbc:postgresql://db2.example.net:5432/app)
+    at app-1.2.4-1.noarch.rpm > opt/app/conf/app.properties
+config changed opt/app/conf/app.properties#timeout  (30 -> 60)
+    at app-1.2.4-1.noarch.rpm > opt/app/conf/app.properties
+outbound added https://api.example.net
+    https://api.example.net/v2/geocode
+    at app-1.2.4-1.noarch.rpm > opt/app/webapp/WEB-INF/classes/com/example/Geo.class
+outbound removed https://old.example.net
+    https://old.example.net/api
+    at app-1.2.3-1.noarch.rpm > opt/app/webapp/WEB-INF/classes/com/example/Geo.class
+outbound removed jdbc:postgresql://db.example.net:5432
+    at app-1.2.3-1.noarch.rpm > opt/app/conf/app.properties
+outbound added jdbc:postgresql://db2.example.net:5432
+    at app-1.2.4-1.noarch.rpm > opt/app/conf/app.properties
+crypto added alg:AES/GCM/NoPadding
+    at app-1.2.4-1.noarch.rpm > opt/app/webapp/WEB-INF/classes/com/example/Geo.class
+crypto removed alg:SHA-1
+    at app-1.2.3-1.noarch.rpm > opt/app/webapp/WEB-INF/classes/com/example/Geo.class
+crypto added alg:SHA-256
+    at app-1.2.4-1.noarch.rpm > opt/app/webapp/WEB-INF/classes/com/example/Geo.class
+schema added opt/app/db/V2__geo.sql
+    alter table accounts: add column region
+    create table geo_cache
+    at app-1.2.4-1.noarch.rpm > opt/app/db/V2__geo.sql
+host changed file:opt/app/bin/run.sh  (mode=0755 owner=root:root -> mode=4755 owner=root:root)
+    setuid added
+    at app-1.2.4-1.noarch.rpm > opt/app/bin/run.sh
+host added file:usr/lib/systemd/system/app.service
+    at app-1.2.4-1.noarch.rpm > usr/lib/systemd/system/app.service
+host added listen:8443
+    at app-1.2.4-1.noarch.rpm > usr/lib/systemd/system/app.service
+host removed requires:java-11-headless
+    at app-1.2.3-1.noarch.rpm
+host added requires:java-17-headless
+    at app-1.2.4-1.noarch.rpm
+host changed script:preinstall
+    + useradd -r -g app app
+    at app-1.2.4-1.noarch.rpm
+host added unit:app.service#ExecStart
+    at app-1.2.4-1.noarch.rpm > usr/lib/systemd/system/app.service
+host added unit:app.service#User
+    at app-1.2.4-1.noarch.rpm > usr/lib/systemd/system/app.service
+host added user:app
+    at app-1.2.4-1.noarch.rpm
+deps changed org.example:geo  (1.0 -> 1.1)
+    at app-1.2.4-1.noarch.rpm > opt/app/webapp/WEB-INF/lib/geo-1.1.jar
+files changed usr/lib/app/libnative.so  (sha256:54f69410b2e5 -> sha256:a2da04cf836e)
+    at app-1.2.4-1.noarch.rpm > usr/lib/app/libnative.so
+1 suppressed by rules
+suppressed config changed opt/app/webapp/WEB-INF/classes/git.properties#git.commit.id (built-in: build metadata)

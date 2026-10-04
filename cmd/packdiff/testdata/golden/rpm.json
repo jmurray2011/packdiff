@@ -1,0 +1,456 @@
+{
+  "schema_version": 1,
+  "tool": {
+    "name": "packdiff",
+    "version": "dev",
+    "rules_digest": "17b44ece93af74f3720565b5b1a134428fd26515d6456b2ed11ec3b3c0e5d291"
+  },
+  "base": {
+    "path": "<dir>/app-1.2.3-1.noarch.rpm",
+    "sha256": "d7979de01135704f4eb5ce2a0771c82438ca732fd4bbb4876cf94a7ccfcf8c46",
+    "type": "rpm",
+    "name": "app",
+    "version": "1.2.3-1"
+  },
+  "head": {
+    "path": "<dir>/app-1.2.4-1.noarch.rpm",
+    "sha256": "8a266068c91b6d3e70cb3c327a20ccf77ff861af04b6578a1fd20fdaaa7044cb",
+    "type": "rpm",
+    "name": "app",
+    "version": "1.2.4-1"
+  },
+  "options": {
+    "first_party": [
+      "com.example"
+    ]
+  },
+  "summary": {
+    "config": {
+      "added": 0,
+      "removed": 0,
+      "changed": 3,
+      "suppressed": 1
+    },
+    "crypto": {
+      "added": 2,
+      "removed": 1,
+      "changed": 0,
+      "suppressed": 0
+    },
+    "deps": {
+      "added": 0,
+      "removed": 0,
+      "changed": 1,
+      "suppressed": 0
+    },
+    "files": {
+      "added": 0,
+      "removed": 0,
+      "changed": 1,
+      "suppressed": 0
+    },
+    "host": {
+      "added": 6,
+      "removed": 1,
+      "changed": 2,
+      "suppressed": 0
+    },
+    "outbound": {
+      "added": 2,
+      "removed": 2,
+      "changed": 0,
+      "suppressed": 0
+    },
+    "schema": {
+      "added": 1,
+      "removed": 0,
+      "changed": 0,
+      "suppressed": 0
+    }
+  },
+  "changes": [
+    {
+      "id": "config:8318578d1bce9421",
+      "category": "config",
+      "kind": "changed",
+      "subject": "${geo.retries}",
+      "before": "3",
+      "after": "5",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/com/example/Geo.class"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "config:4a151e9c123062a1",
+      "category": "config",
+      "kind": "changed",
+      "subject": "opt/app/conf/app.properties#db.url",
+      "before": "jdbc:postgresql://db.example.net:5432/app",
+      "after": "jdbc:postgresql://db2.example.net:5432/app",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/conf/app.properties"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "config:6a6c1d852379b6d5",
+      "category": "config",
+      "kind": "changed",
+      "subject": "opt/app/conf/app.properties#timeout",
+      "before": "30",
+      "after": "60",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/conf/app.properties"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outbound:d5a4ec63c2a6bf51",
+      "category": "outbound",
+      "kind": "added",
+      "subject": "https://api.example.net",
+      "before": null,
+      "after": "",
+      "details": [
+        "https://api.example.net/v2/geocode"
+      ],
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/com/example/Geo.class"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outbound:15689316ef3d1322",
+      "category": "outbound",
+      "kind": "removed",
+      "subject": "https://old.example.net",
+      "before": "",
+      "after": null,
+      "details": [
+        "https://old.example.net/api"
+      ],
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.3-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/com/example/Geo.class"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outbound:3d3fb683e1ad1666",
+      "category": "outbound",
+      "kind": "removed",
+      "subject": "jdbc:postgresql://db.example.net:5432",
+      "before": "",
+      "after": null,
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.3-1.noarch.rpm",
+            "opt/app/conf/app.properties"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "outbound:1685dabb2c8a6ec7",
+      "category": "outbound",
+      "kind": "added",
+      "subject": "jdbc:postgresql://db2.example.net:5432",
+      "before": null,
+      "after": "",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/conf/app.properties"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crypto:4d40743db6e63fba",
+      "category": "crypto",
+      "kind": "added",
+      "subject": "alg:AES/GCM/NoPadding",
+      "before": null,
+      "after": "",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/com/example/Geo.class"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crypto:3e2a81f59306f7dd",
+      "category": "crypto",
+      "kind": "removed",
+      "subject": "alg:SHA-1",
+      "before": "",
+      "after": null,
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.3-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/com/example/Geo.class"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "crypto:3740c15dfddd4212",
+      "category": "crypto",
+      "kind": "added",
+      "subject": "alg:SHA-256",
+      "before": null,
+      "after": "",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/com/example/Geo.class"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schema:f52c17630ab9533a",
+      "category": "schema",
+      "kind": "added",
+      "subject": "opt/app/db/V2__geo.sql",
+      "before": null,
+      "after": "sha256:f9407ce75de35712f3cefe840ef8edd01905ea55b8ec1b1c98fba956550cb325",
+      "details": [
+        "alter table accounts: add column region",
+        "create table geo_cache"
+      ],
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/db/V2__geo.sql"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:3d57a05a32672e7e",
+      "category": "host",
+      "kind": "changed",
+      "subject": "file:opt/app/bin/run.sh",
+      "before": "mode=0755 owner=root:root",
+      "after": "mode=4755 owner=root:root",
+      "details": [
+        "setuid added"
+      ],
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/bin/run.sh"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:f551f5a4baf0a51f",
+      "category": "host",
+      "kind": "added",
+      "subject": "file:usr/lib/systemd/system/app.service",
+      "before": null,
+      "after": "mode=0644 owner=root:root",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "usr/lib/systemd/system/app.service"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:7b4573a6a58cafe5",
+      "category": "host",
+      "kind": "added",
+      "subject": "listen:8443",
+      "before": null,
+      "after": "usr/lib/systemd/system/app.service ExecStart",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "usr/lib/systemd/system/app.service"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:78a1e5126975870a",
+      "category": "host",
+      "kind": "removed",
+      "subject": "requires:java-11-headless",
+      "before": "",
+      "after": null,
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.3-1.noarch.rpm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:da4878b815ab1cd0",
+      "category": "host",
+      "kind": "added",
+      "subject": "requires:java-17-headless",
+      "before": null,
+      "after": "",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:aaf9079fff419a87",
+      "category": "host",
+      "kind": "changed",
+      "subject": "script:preinstall",
+      "before": "groupadd -r app\n",
+      "after": "groupadd -r app\nuseradd -r -g app app\n",
+      "details": [
+        "+ useradd -r -g app app"
+      ],
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:29d343f4a367e479",
+      "category": "host",
+      "kind": "added",
+      "subject": "unit:app.service#ExecStart",
+      "before": null,
+      "after": "/opt/app/bin/run.sh --port=8443",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "usr/lib/systemd/system/app.service"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:ca3f0c80ac3c46ba",
+      "category": "host",
+      "kind": "added",
+      "subject": "unit:app.service#User",
+      "before": null,
+      "after": "app",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "usr/lib/systemd/system/app.service"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "host:6270a6dbbc020a15",
+      "category": "host",
+      "kind": "added",
+      "subject": "user:app",
+      "before": null,
+      "after": "preinstall",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deps:f09fdbd4bda44e44",
+      "category": "deps",
+      "kind": "changed",
+      "subject": "org.example:geo",
+      "before": "1.0",
+      "after": "1.1",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/lib/geo-1.1.jar"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "files:9e5686793aaf0856",
+      "category": "files",
+      "kind": "changed",
+      "subject": "usr/lib/app/libnative.so",
+      "before": "sha256:54f69410b2e5ff03c77f368cbedc7f423214238e047e5c3753c9c014dde0d5dd",
+      "after": "sha256:a2da04cf836e68d5017e80f43e492f78a3d6df10bb3193476df1d958deeb106c",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "usr/lib/app/libnative.so"
+          ]
+        }
+      ]
+    }
+  ],
+  "suppressed": [
+    {
+      "id": "config:3ab4c6700ba22dde",
+      "category": "config",
+      "kind": "changed",
+      "subject": "opt/app/webapp/WEB-INF/classes/git.properties#git.commit.id",
+      "before": "aaa",
+      "after": "bbb",
+      "locations": [
+        {
+          "chain": [
+            "app-1.2.4-1.noarch.rpm",
+            "opt/app/webapp/WEB-INF/classes/git.properties"
+          ]
+        }
+      ],
+      "suppressed": "built-in: build metadata"
+    }
+  ]
+}

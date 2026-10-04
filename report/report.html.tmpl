@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<title>{{.Title}}</title>
+<style>
+:root {
+  --ink: #1d2433; --muted: #5b6476; --paper: #fcfcfa; --rule: #dadde3; --wash: #f1f2f5;
+  --add: #2e7a4e; --del: #b03a3a; --chg: #4a55b0;
+  --serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e6e8ee; --muted: #9aa3b5; --paper: #151821; --rule: #2c3240; --wash: #1d212b;
+    --add: #6bc08f; --del: #e58585; --chg: #a3abf2;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.5 var(--sans); }
+main { max-width: 76rem; margin: 0 auto; padding: 0 1rem 4rem; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--chg); outline-offset: 2px; }
+[hidden] { display: none !important; }
+code, .mono { font-family: var(--mono); font-size: .875em; }
+
+.hero { padding: 3rem 0 2rem; }
+.product { margin: 0 0 .25rem; font-size: 1.125rem; color: var(--muted); }
+.versions { margin: 0; font: 600 clamp(2.25rem, 7vw, 4.75rem)/1.05 var(--serif); letter-spacing: -.01em; overflow-wrap: anywhere; }
+.versions .from { color: var(--muted); font-weight: 400; }
+.versions .arrow { color: var(--muted); font-weight: 400; padding: 0 .15em; }
+
+.strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 2px solid var(--ink); margin: 0 0 2rem; }
+.cat { display: block; padding: .75rem .75rem 1rem 0; text-decoration: none; border-bottom: 1px solid var(--rule); }
+.cat + .cat { padding-left: .75rem; border-left: 1px solid var(--rule); }
+.cat:hover .cat-name { text-decoration: underline; }
+.cat-name { display: block; font: 600 1.125rem var(--serif); text-transform: capitalize; }
+.counts { display: flex; gap: .625rem; margin: .125rem 0 0; font-family: var(--mono); font-size: .875rem; color: var(--muted); }
+.supp { display: block; margin-top: .25rem; font-size: .8125rem; color: var(--muted); }
+.counts .a { color: var(--add); } .counts .r { color: var(--del); } .counts .c { color: var(--chg); }
+
+.toolbar { display: none; position: sticky; top: 0; z-index: 2; background: var(--paper); border-bottom: 1px solid var(--rule); padding: .625rem 0; margin-bottom: 1rem; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.js .toolbar { display: flex; }
+.toolbar input[type=search] { flex: 1 1 18rem; font: inherit; padding: .375rem .625rem; color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 3px; }
+.toolbar label { display: flex; gap: .375rem; align-items: center; white-space: nowrap; }
+.shown { color: var(--muted); font-size: .875rem; }
+
+.ledger { margin: 2.5rem 0 0; }
+.ledger > header { display: grid; grid-template-columns: 1fr auto; gap: 0 1rem; align-items: baseline; border-bottom: 2px solid var(--ink); padding-bottom: .375rem; }
+.ledger h2 { margin: 0; font: 600 1.75rem var(--serif); text-transform: capitalize; }
+.ledger .tally { margin: 0; color: var(--muted); font-size: .875rem; text-align: right; }
+.rows > summary { cursor: pointer; padding: .5rem 0; color: var(--muted); }
+
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-weight: 600; font-size: .8125rem; color: var(--muted); padding: .5rem .5rem .25rem 0; border-bottom: 1px solid var(--rule); }
+td { vertical-align: top; padding: .625rem .75rem .625rem 0; border-bottom: 1px solid var(--rule); }
+td.change { width: 55%; }
+td.rule { color: var(--muted); }
+td.values { width: 28%; }
+.subject { display: flex; gap: .5rem; align-items: baseline; }
+.kind { flex: none; width: 1.25rem; text-align: center; font: 700 1rem var(--mono); }
+.kind-added { color: var(--add); } .kind-removed { color: var(--del); } .kind-changed { color: var(--chg); }
+.primary { font-family: var(--mono); font-size: .9375rem; font-weight: 600; overflow-wrap: anywhere; }
+.context { display: block; margin-left: 1.75rem; color: var(--muted); font-family: var(--mono); font-size: .8125rem; overflow-wrap: anywhere; }
+.tag { display: inline-block; margin-left: 1.75rem; font-size: .75rem; color: var(--muted); border: 1px solid var(--rule); border-radius: 2px; padding: 0 .3rem; }
+.values code { overflow-wrap: anywhere; }
+del { color: var(--del); text-decoration-thickness: 1px; }
+ins { color: var(--add); text-decoration: none; }
+.to { color: var(--muted); padding: 0 .25rem; }
+.evidence { margin: .375rem 0 0 1.75rem; }
+.evidence > summary { cursor: pointer; color: var(--muted); font-size: .8125rem; }
+.evidence ul { list-style: none; margin: .375rem 0; padding: 0; font-family: var(--mono); font-size: .8125rem; }
+.evidence li { overflow-wrap: anywhere; padding: .0625rem 0; }
+.diff { white-space: pre-wrap; padding-left: .375rem !important; }
+.diff.add { background: color-mix(in srgb, var(--add) 12%, transparent); }
+.diff.del { background: color-mix(in srgb, var(--del) 12%, transparent); }
+.chain { list-style: none; margin: .25rem 0 0; padding: 0; font-family: var(--mono); font-size: .8125rem; color: var(--muted); }
+.chain li { display: inline; overflow-wrap: anywhere; }
+.chain li + li::before { content: " \203A  "; }
+.chain li:last-child { color: var(--ink); }
+
+.aside { margin-top: 3rem; border-top: 2px solid var(--ink); padding-top: .5rem; }
+.aside h2 { font: 600 1.25rem var(--serif); margin: .5rem 0; }
+.aside > details > summary { cursor: pointer; font: 600 1.25rem var(--serif); padding: .5rem 0; }
+dl.prov { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1.5rem; margin: 0; }
+dl.prov dt { color: var(--muted); }
+dl.prov dd { margin: 0; overflow-wrap: anywhere; }
+footer { margin-top: 3rem; color: var(--muted); font-size: .8125rem; }
+
+@media (max-width: 60rem) {
+  .strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .cat:nth-child(4n+1) { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 40rem) {
+  .strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cat:nth-child(4n+1) { padding-left: .75rem; border-left: 1px solid var(--rule); }
+  .cat:nth-child(2n+1) { padding-left: 0; border-left: 0; }
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: auto !important; }
+  tr.row { border-bottom: 1px solid var(--rule); padding: .5rem 0; }
+  td { border: 0; padding: .25rem 0; }
+  td.values, td.rule { margin-left: 1.75rem; }
+}
+@media print {
+  .toolbar { display: none !important; }
+  body { font-size: 11pt; }
+  .strip, tr.row { break-inside: avoid; }
+  .ledger > header { break-after: avoid; }
+}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <p class="product">{{.Product}}</p>
+  <h1 class="versions"><span class="from">{{.Base.Version}}</span><span class="arrow" aria-label="to">&rarr;</span><span class="into">{{.Head.Version}}</span></h1>
+</header>
+
+<nav class="strip" aria-label="Categories">
+{{- range .Categories}}
+  {{if .Rows}}<a class="cat" href="#cat-{{.Name}}">{{else}}<span class="cat">{{end}}
+    <span class="cat-name">{{.Name}}</span>
+    <span class="counts">{{if .Added}}<span class="a">+{{.Added}}</span>{{end}}{{if .Removed}}<span class="r">&minus;{{.Removed}}</span>{{end}}{{if .Changed}}<span class="c">~{{.Changed}}</span>{{end}}{{if not .Rows}}<span>0</span>{{end}}</span>
+    {{- if .Suppressed}}<span class="supp">{{.Suppressed}} suppressed</span>{{end}}
+  {{if .Rows}}</a>{{else}}</span>{{end}}
+{{- end}}
+</nav>
+
+<div class="toolbar" role="search">
+  <input type="search" id="q" placeholder="Filter by key, host, path, or value" aria-label="Filter changes">
+  <span class="shown" id="shown" aria-live="polite"></span>
+</div>
+
+{{range .Categories}}{{if .Rows}}
+<section class="ledger" id="cat-{{.Name}}">
+  <header>
+    <h2>{{.Name}}</h2>
+    <p class="tally">{{if .Suppressed}}{{.Suppressed}} suppressed{{end}}</p>
+  </header>
+  <details class="rows"{{if .Open}} open{{end}}>
+    <summary>{{len .Rows}} {{if eq (len .Rows) 1}}change{{else}}changes{{end}}</summary>
+    <table>
+      <thead><tr><th scope="col">Change</th>{{if .Values}}<th scope="col">Before and after</th>{{end}}</tr></thead>
+      <tbody>
+      {{- range .Rows}}
+      {{template "row" .}}
+      {{- end}}
+      </tbody>
+    </table>
+  </details>
+</section>
+{{end}}{{end}}
+
+<section class="aside">
+{{- if .Suppressed}}
+  <details>
+    <summary>{{len .Suppressed}} {{if eq (len .Suppressed) 1}}change{{else}}changes{{end}} suppressed by rules</summary>
+    <table>
+      <thead><tr><th scope="col">Change</th><th scope="col">Before and after</th><th scope="col">Rule</th></tr></thead>
+      <tbody>
+      {{- range .Suppressed}}
+      {{template "row" .}}
+      {{- end}}
+      </tbody>
+    </table>
+  </details>
+{{- end}}
+  <h2>Provenance</h2>
+  <dl class="prov">
+    <dt>Deployed</dt><dd><span class="mono">{{.Base.Path}}</span> ({{.Base.Type}})</dd>
+    <dt>SHA-256</dt><dd class="mono">{{.Base.SHA256}}</dd>
+    <dt>Candidate</dt><dd><span class="mono">{{.Head.Path}}</span> ({{.Head.Type}})</dd>
+    <dt>SHA-256</dt><dd class="mono">{{.Head.SHA256}}</dd>
+    <dt>First-party code</dt><dd class="mono">{{range $i, $p := .Options.FirstParty}}{{if $i}}, {{end}}{{$p}}{{else}}none{{end}}</dd>
+    <dt>Rules digest</dt><dd class="mono">{{if .Tool.RulesDigest}}{{.Tool.RulesDigest}}{{else}}not recorded{{end}}</dd>
+  </dl>
+</section>
+
+<footer>{{.Tool.Name}} {{.Tool.Version}}</footer>
+</main>
+
+{{define "row"}}
+<tr class="row" data-search="{{.Search}}" id="{{.ID}}">
+  <td class="change">
+    <div class="subject">
+      {{- if eq .Kind "added"}}<span class="kind kind-added" title="added">+</span>{{else if eq .Kind "removed"}}<span class="kind kind-removed" title="removed">&minus;</span>{{else}}<span class="kind kind-changed" title="changed">~</span>{{end}}
+      <span class="primary">{{.Primary}}</span>
+    </div>
+    {{- if .Context}}<span class="context">{{.Context}}</span>{{end}}
+    {{- if .Tag}}<span class="tag">{{.Tag}}</span>{{end}}
+    {{- if or .Details .Locations}}
+    <details class="evidence">
+      <summary>Evidence</summary>
+      {{- if .Details}}<ul>{{range .Details}}<li{{if .Class}} class="{{.Class}}"{{end}}>{{.Text}}</li>{{end}}</ul>{{end}}
+      {{- range .Locations}}<ol class="chain">{{range .}}<li>{{.}}</li>{{end}}</ol>{{end}}
+    </details>
+    {{- end}}
+  </td>
+  {{- if .Values}}
+  <td class="values">
+    {{- if and .Before .After}}<del><code>{{.Before}}</code></del><span class="to" aria-label="to">&rarr;</span><ins><code>{{.After}}</code></ins>
+    {{- else if .After}}<ins><code>{{.After}}</code></ins>
+    {{- else if .Before}}<del><code>{{.Before}}</code></del>{{end}}
+  </td>
+  {{- end}}
+  {{- if .Note}}
+  <td class="rule">{{.Note}}</td>
+  {{- end}}
+</tr>
+{{end}}
+
+<script>
+(function () {
+  document.documentElement.classList.add('js');
+  var q = document.getElementById('q');
+  var shown = document.getElementById('shown');
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.ledger tr.row'));
+  function apply() {
+    var term = q.value.trim().toLowerCase();
+    var filtering = term !== '';
+    var n = 0;
+    rows.forEach(function (r) {
+      var ok = !term || r.getAttribute('data-search').indexOf(term) >= 0;
+      r.hidden = !ok;
+      if (ok) { n++; }
+    });
+    document.querySelectorAll('.ledger').forEach(function (sec) {
+      var d = sec.querySelector('details.rows');
+      if (!d) { return; }
+      var visible = sec.querySelectorAll('tr.row:not([hidden])').length;
+      if (filtering && visible > 0) { d.open = true; }
+      sec.hidden = filtering && visible === 0;
+    });
+    shown.textContent = filtering ? n + ' of ' + rows.length + ' changes shown' : rows.length + ' changes';
+  }
+  q.addEventListener('input', apply);
+  window.addEventListener('beforeprint', function () {
+    document.querySelectorAll('details').forEach(function (d) { d.open = true; });
+  });
+  apply();
+})();
+</script>
+</body>
+</html>

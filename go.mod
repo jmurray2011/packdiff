@@ -8,7 +8,7 @@ require (
 	github.com/klauspost/compress v1.20.0
 	github.com/sassoftware/go-rpmutils v0.4.0
 	github.com/ulikunitz/xz v0.5.17
-	go.yaml.in/yaml/v3 v3.0.5
+	go.yaml.in/yaml/v3 v3.0.6
 	modernc.org/sqlite v1.60.1
 )
 
